@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+           background: linear-gradient(135deg,  #203a43, #2c5364);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 30px;
+            margin: 0;
+        }
+        .music-player {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+}
+.player {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        #cover {
+            width: 70%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .controls button {
+            font-size: 20px;
+            margin: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #progress {
+            width: 100%;
+        }
+        .song-list {
+            margin-top: 20px;
+            width: 300px;
+        }
+        .song-item {
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .song-item:hover {
+            background: #f0f0f0;
+        }
+        .song-item h4, .song-item p {
+            margin: 0;
+        }
+        /* White block transparent */
+div, section, main {
+    background-color: transparent !important;
+}
+
+.container,
+.music-player,
+.card,
+.box,
+.player {
+    background: rgba(255, 255, 255, 0.25); !important;
+    backdrop-filter: blur(8px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    border-radius: 12px;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.app-title {
+    color: #e0e0e0;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-bottom: 6px;   /* player ke bilkul upar */
+    text-align: center;
+    opacity: 0.9;
+}
+    </style>
+</head>
+<body>
+  <div class="container">
+<div class="app-title">Music Player Mini Project</div>
+<div class="player">
+    <img id="cover" src="song1.jpg" alt="cover">
+    <h2 id="title">Song Title</h2>
+    <p id="artist">Artist</p>
+
+    <audio id="audio"></audio>
+    <input type="range" id="progress" value="0">
+
+    <div class="controls">
+        <button onclick="prevSong()">⏮</button>
+        <button id="play-btn" onclick="playPause()">▶</button>
+        <button onclick="nextSong()">⏭</button>
+    </div>
+</div>
+</div>
+<div class="song-list" id="song-list">
+    <!-- Song titles will appear here -->
+</div>
+<div class="music-player">
+  
+</div>
+<script>
+const songs = [
+    { name: "song1.mp3", title: "Song One", artist: "Artist 1", cover: "song1.jpg" },
+    { name: "song2.mp3", title: "Song Two", artist: "Artist 2", cover: "song2.jpg" },
+    { name: "song3.mp3", title: "Song Three", artist: "Artist 3", cover: "song3.jpg" }
+];
+
+let songIndex = 0;
+
+const audio = document.getElementById("audio");
+const title = document.getElementById("title");
+const artist = document.getElementById("artist");
+const progress = document.getElementById("progress");
+const playBtn = document.getElementById("play-btn");
+const cover = document.getElementById("cover");
+const songListDiv = document.getElementById("song-list");
+
+// Load song into player
+function loadSong(song) {
+    title.innerText = song.title;
+    artist.innerText = song.artist;
+    audio.src = song.name;
+    cover.src = song.cover;
+}
+
+// Generate song list
+songs.forEach((song, index) => {
+    const songDiv = document.createElement("div");
+    songDiv.classList.add("song-item");
+    songDiv.innerHTML = `<h4>${song.title}</h4><p>${song.artist}</p>`;
+    songDiv.addEventListener("click", () => {
+        songIndex = index;
+        loadSong(songs[songIndex]);
+        audio.play();
+        playBtn.innerText = "⏸";
+    });
+    songListDiv.appendChild(songDiv);
+});
+
+loadSong(songs[songIndex]);
+
+function playPause() {
+    if(audio.paused) {
+        audio.play();
+        playBtn.innerText = "⏸";
+    } else {
+        audio.pause();
+        playBtn.innerText = "▶";
+    }
+}
+
+function nextSong() {
+    songIndex = (songIndex + 1) % songs.length;
+    loadSong(songs[songIndex]);
+    audio.play();
+    playBtn.innerText = "⏸";
+}
+
+function prevSong() {
+    songIndex = (songIndex - 1 + songs.length) % songs.length;
+    loadSong(songs[songIndex]);
+    audio.play();
+    playBtn.innerText = "⏸";
+}
+
+audio.addEventListener("timeupdate", () => {
+    progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+});
+
+progress.addEventListener("change", () => {
+    audio.currentTime = (progress.value * audio.duration) / 100;
+});
+
+</script>
+
+</body>
+</html>
